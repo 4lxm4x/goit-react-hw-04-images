@@ -1,58 +1,50 @@
-import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
-import Modal from 'components/Modal/Modal';
-import { Component } from 'react';
-import '../../styles.css';
+import ImageGalleryItem from "components/ImageGalleryItem/ImageGalleryItem";
+import Modal from "components/Modal/Modal";
+import { useState } from "react";
+import "../../styles.css";
 
-class ImageGallery extends Component {
-  state = { isModalOpen: false, modalImageURL: '', modalAlt: '' };
+export default function ImageGallery({ images }) {
+  // state = { isModalOpen: false, modalImageURL: '', modalAlt: '' };
+  const [modalOpen, setmodalOpen] = useState(false);
+  const [modalImageURL, setmodalImageURL] = useState("");
+  const [modalAlt, setmodalAlt] = useState("");
 
-  toggleModal = () => {
-    this.setState(prevState => {
-      return {
-        isModalOpen: !prevState.isModalOpen,
-      };
+  const toggleModal = () => {
+    setmodalOpen((prevState) => {
+      return !prevState;
     });
   };
 
-  handleImageClick = (largeImageURL, tags) => {
-    this.setState(
-      {
-        modalImageURL: largeImageURL,
-        modalAlt: tags,
-      },
-      () => this.toggleModal()
-    );
+  const handleImageClick = (largeImageURL, tags) => {
+    setmodalImageURL(largeImageURL);
+    setmodalAlt(tags);
+
+    toggleModal();
   };
 
-  render() {
-    return (
-      <div>
-        <ul className="ImageGallery">
-          {this.props.images.map(
-            ({ id, webformatURL, largeImageURL, tags }) => {
-              return (
-                <ImageGalleryItem
-                  key={id}
-                  webformatURL={webformatURL}
-                  largeImageURL={largeImageURL}
-                  tags={tags}
-                  onClick={() => this.handleImageClick(largeImageURL, tags)}
-                />
-              );
-            }
-          )}
-        </ul>
-        {this.state.isModalOpen && (
-          <Modal
-            largeImage={this.state.modalImageURL}
-            onOverlayClick={this.toggleModal}
-            alt={this.state.modalAlt}
-            onClose={close => this.setState({ isModalOpen: close })}
-          />
-        )}
-      </div>
-    );
-  }
+  return (
+    <div>
+      <ul className="ImageGallery">
+        {images.map(({ id, webformatURL, largeImageURL, tags }) => {
+          return (
+            <ImageGalleryItem
+              key={id}
+              webformatURL={webformatURL}
+              largeImageURL={largeImageURL}
+              tags={tags}
+              onClick={() => handleImageClick(largeImageURL, tags)}
+            />
+          );
+        })}
+      </ul>
+      {modalOpen && (
+        <Modal
+          largeImage={modalImageURL}
+          onOverlayClick={toggleModal}
+          alt={modalAlt}
+          onClose={(close) => setmodalOpen(false)}
+        />
+      )}
+    </div>
+  );
 }
-
-export default ImageGallery;
