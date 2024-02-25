@@ -3,22 +3,20 @@ import { useState } from "react";
 import { ImSearch } from "react-icons/im";
 
 export default function SearchBar({ onSubmit }) {
-  // state = {
-  //   input: '',
-  // };
 
   const [input, setInput] = useState("");
 
   const onFormSubmit = (e) => {
     e.preventDefault();
     e.target.reset();
+    onSubmit(input);
+    setInput("");
 
-    return onSubmit(input);
+    return; 
   };
 
   const onInput = (e) => {
-    setInput(e.target.value);
-    // this.setState({ input: e.target.value });
+  setInput(e.target.value);
   };
 
   return (
